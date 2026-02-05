@@ -1,0 +1,33 @@
+services:
+  app:
+    build: .
+    container_name: laravel_app
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    environment:
+      - DB_HOST=db
+  db:
+    image: mysql:8.0
+    container_name: laravel_db
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - db_data:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: laravel_pma
+    links:
+      - db:db
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_ARBITRARY=1 # Optional: allows you to log into any server
+      - PMA_HOST=db     # Matches the service name of your MySQL container
+    networks:
+      - default
+
+volumes:
+  db_data:
