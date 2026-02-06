@@ -22,5 +22,10 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && npm -v \
     && echo "Node & npm installed successfully"
 WORKDIR /var/www/html
+# Copy startup script
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
 
+# Run start.sh at container start
+CMD ["/start.sh"]
 
