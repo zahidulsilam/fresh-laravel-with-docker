@@ -19,7 +19,8 @@ if [ ! -f ".env" ]; then
 else
     echo ".env file already exists."
 fi
-
+echo "Clearing Laravel configuration cache..."
+php artisan config:clear
 php artisan migrate --force
 
 echo "Fixing permissions..."
