@@ -1,33 +1,34 @@
 FROM php:8.2-apache
 
-# 1. Install dependencies
+# Install dependencies
 RUN apt-get update && apt-get install -y \
-    libpng-dev libzip-dev unzip zip git
+    libpng-dev libzip-dev unzip zip git curl nodejs npm \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# 2. Install PHP extensions
+# Install PHP extensions
 RUN docker-php-ext-install pdo_mysql gd zip
 
-# 3. Apache Config
+# Enable rewrite
 RUN a2enmod rewrite
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# 4. Composer
+# Set document root
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/000-default.conf
+
+# Copy composer from official image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-COPY composer.json composer.lock ./
-# install node and npm
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    && node -v \
-    && npm -v \
-    && echo "Node & npm installed successfully"
+
+# Copy app
 WORKDIR /var/www/html
 COPY . .
-# Copy startup script
+
+# Fix permissions
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+# Use your start.sh
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
-# Run start.sh at container start
+# Start Apache
 CMD ["/start.sh"]
-
