@@ -45,11 +45,11 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'host' => env('MYSQLHOST', 'db'),
+            'host' => env('MYSQLHOST', 'mysql.railway.internal'),
             'port' => env('MYSQLPORT', '3306'),
-            'database' => env('MYSQLDATABASE', 'laravel'),
+            'database' => env('MYSQLDATABASE', 'railway'),
             'username' => env('MYSQLUSER', 'root'),
-            'password' => env('MYSQLPASSWORD', ''),
+            'password' => env('MYSQLPASSWORD', 'fYnozxAnTiASnkFgmzMnaBnxzWqaLMKE'),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
