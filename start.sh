@@ -10,7 +10,10 @@ if [ ! -d vendor ]; then
 fi
 
 # env file rename
-
+# DEBUG: Print current directory and list files
+echo "Current directory: $(pwd)"
+echo "Files in this directory:"
+ls -la
 if [ ! -f ".env" ]; then
     echo "Creating .env file from .env.example..."
     cp .env.example .env
